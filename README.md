@@ -1,2 +1,5 @@
-# cpu8
-Small CPU Core and Board designed in Logisim
+# [WIP] cpu8
+
+Small CPU Core and Board
+
+To run this project you need to install Logisim
