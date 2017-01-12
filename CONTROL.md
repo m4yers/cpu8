@@ -19,13 +19,14 @@ These drive Arithmetic Logic Unit execution, and occupy bits [13:4]:
      the main Data Bus.
    - Value 4 selects Data Bus
  - bits [13:11]: ALU instruction code. Possible values are:
-   - 0: ADD
-   - 1: SUB
-   - 2: NOT
-   - 3: OR
-   - 4: AND
-   - 5: LSR
-   - 6: LSL
+   - 0: INC
+   - 1: ADD
+   - 2: SUB
+   - 3: NOT
+   - 4: OR
+   - 5: AND
+   - 6: LSR
+   - 7: LSL
 
 ## Registers
 Registers pins allow to update registers from the Data Bus or to write registers
@@ -42,4 +43,4 @@ to DB. These occupy pins [17:14]:
 The system registers represent pins vital to cpu execution:
  - 18: RESET
  - 19: CLOCK
- - 20: HALT
+ - 20: HCF
