@@ -2,8 +2,7 @@ v2.0 raw
 # INIT:
 3D FF
 0D 05
-0E 08
-BD
+0E 07
 CF
 # FACT:
 C7 00
@@ -13,7 +12,7 @@ C7 00
 # COMP
 28 01
 39
-0E 08
+0E 07
 21
 D5
 # CHECK:
