@@ -74,10 +74,10 @@ INSTRUCTION SRC DST
 
 #### Examples
 ```assembly
-0x00      INC W        # Increment W by 1
-0x04      ADD W        # Double value in register W and store it back to W
-0x84      ADD Y        # Add W to Y and store back to Y
-0x6801    SUB 0x01 X   # Subtract 1 from W
+0x00      INC W        ; Increment W by 1
+0x04      ADD W        ; Double value in register W and store it back to W
+0x84      ADD Y        ; Add W to Y and store back to Y
+0x6801    SUB 0x01 X   ; Subtract 1 from W
 ```
 
 ### MOV
@@ -107,10 +107,10 @@ There are 4 address modes:
 
 #### Examples
 ```assembly
-0x3DFF    MOV 0xFF Z  # Move 0xFF to register Z
-0x4508    MOV [08] W  # Move value at address [08] to register W
-0x19FF    MOV W [FF]  # Move value from register W to address [FF]
-0x21      MOV W Y     # Move value in register W to register Y
+0x3DFF    MOV 0xFF Z  ; Move 0xFF to register Z
+0x4508    MOV [08] W  ; Move value at address [08] to register W
+0x19FF    MOV W [FF]  ; Move value from register W to address [FF]
+0x21      MOV W Y     ; Move value in register W to register Y
 ```
 
 ### PUSH
@@ -133,8 +133,8 @@ Push instruction decrements SP and stores a value into an available slot.
 
 #### Examples
 ```assembly
-0x7DAF    PUSH 0xAF # Push value 0xAF to stack
-0x39      PUSH W    # Push value in register W to stack
+0x7DAF    PUSH 0xAF ; Push value 0xAF to stack
+0x39      PUSH W    ; Push value in register W to stack
 ```
 
 ### POP
@@ -157,8 +157,8 @@ Pop reads a value from stack and increments SP.
 
 #### Examples
 ```assembly
-0xF5    POP Z  # Pop value from stack and store it into register Z
-0xBD    POP    # Pop value from stack and drop it.
+0xF5    POP Z  ; Pop value from stack and store it into register Z
+0xBD    POP    ; Pop value from stack and drop it.
 ```
 
 ### Control
