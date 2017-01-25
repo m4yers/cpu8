@@ -1,5 +1,8 @@
 # TODO
 
+## Assembler
+Would be nice to have
+
 ## Instructions
 
 ### MOV

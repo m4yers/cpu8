@@ -1,4 +1,22 @@
 # Instruction Set Architecture
+* [Registers](#registers)
+* [Stack](#stack)
+* [Code](#code)
+* [Flags](#flags)
+* [Instructions](#instructions)
+  * [Language](#language)
+  * [ARITH](#arith)
+  * [MOV](#mov)
+  * [PUSH](#push)
+  * [POP](#pop)
+  * [BRA](#bra)
+  * [Bcc](#bcc)
+  * [CMP](#cmp)
+  * [JMP](#jmp)
+  * [JSR](#jsr)
+  * [RSR](#rsr)
+  * [HCF](#hcf)
+  * [ABF](#abf)
 
 ## Registers
 There are 4 general purpose 8 bit registers available: __W, X, Y and Z__, and
@@ -25,21 +43,23 @@ There are 4 basic status flags:
 CPU8 instruction  is 8 bit long plus, if required by instruction optional
 immediate or address extension byte.
 
-### Assembly Language
+
+### Language
 CPU8 assembly language uses 2-operand format, *SRC* defined first, *DST* second:
 ```
 INSTRUCTION SRC DST
 ```
 
+
 ### ARITH
 
 #### Instruction Format
 ```
-----------------------------------------------------
+------+---+---------+------+------------------------
  7  6 | 5 | 4  3  2 | 1  0 | F  E  D  C  B  A  9  8
-----------------------------------------------------
+------+---+---------+------+------------------------
  DST  | I |   OPC   | 0  0 |    IMMEDIATE IF ANY
-----------------------------------------------------
+------+---+---------+------+------------------------
 ```
 - OPC defines ALU operation, possible values are:
   - __000__: INC
@@ -80,14 +100,15 @@ INSTRUCTION SRC DST
 0x6801    SUB 0x01 X   ; Subtract 1 from W
 ```
 
+
 ### MOV
 #### Instruction Format
 ```
-----------------------------------------------------
+------+------+------+------+------------------------
  7  6 | 5  4 | 3  2 | 1  0 | F  E  D  C  B  A  9  8
-----------------------------------------------------
+------+------+------+------+------------------------
   SRC | DST  | FORM | 0  1 |    IMMEDIATE IF ANY
-----------------------------------------------------
+------+------+------+------+------------------------
 ```
 ##### FORM
 Form defines move direction and data location:
@@ -113,16 +134,17 @@ There are 4 address modes:
 0x21      MOV W Y     ; Move value in register W to register Y
 ```
 
+
 ### PUSH
 Push instruction decrements SP and stores a value into an available slot.
 
 #### Instruction Format
 ```
-----------------------------------------------------
+------+------+------+------+------------------------
  7  6 | 5  4 | 3  2 | 1  0 | F  E  D  C  B  A  9  8
-----------------------------------------------------
+------+------+------+------+------------------------
   SRC | DST  | FORM | 0  1 |    IMMEDIATE IF ANY
-----------------------------------------------------
+------+------+------+------+------------------------
 ```
 
 ##### FORM
@@ -137,16 +159,17 @@ Push instruction decrements SP and stores a value into an available slot.
 0x39      PUSH W    ; Push value in register W to stack
 ```
 
+
 ### POP
 Pop reads a value from stack and increments SP.
 
 #### Instruction Format
 ```
-----------------------------------------------------
+------+------+------+------+------------------------
  7  6 | 5  4 | 3  2 | 1  0 | F  E  D  C  B  A  9  8
-----------------------------------------------------
+------+------+------+------+------------------------
   SRC | DST  | FORM | 0  1 |    IMMEDIATE IF ANY
-----------------------------------------------------
+------+------+------+------+------------------------
 ```
 
 ##### FORM
@@ -161,16 +184,17 @@ Pop reads a value from stack and increments SP.
 0xBD    POP    ; Pop value from stack and drop it.
 ```
 
+
 ### BRA
 Unconditional PC-relative branch, PC points to the second byte(extension).
 
 #### Instruction Format
 ```
--------------------------------------------------
+------------------------+------------------------
  7  6  5  4  3  2  1  0 | F  E  D  C  B  A  9  8
--------------------------------------------------
+------------------------+------------------------
  0  0  0  0  0  0  1  0 |         OFFSET
--------------------------------------------------
+------------------------+------------------------
 ```
 
 #### Examples
@@ -179,6 +203,7 @@ Unconditional PC-relative branch, PC points to the second byte(extension).
 0x02F6    BRA 0xF6  ; Branch back 10 bytes
 ```
 
+
 ### Bcc
 Conditional PC-relative branch, PC points to the second byte(extension). CC part
 of the instruction mnemonic is replaced with an appropriate condition code suffix.
@@ -186,11 +211,11 @@ These instructions go in pair with CMP instruction.
 
 #### Instruction Format
 ```
---------------------------------------------------
+------------+------------+------------------------
  7  6  5  4 | 3  2  1  0 | F  E  D  C  B  A  9  8
---------------------------------------------------
+------------+------------+------------------------
   CONDITION | 0  0  1  0 |         OFFSET
---------------------------------------------------
+------------+------------+------------------------
 ```
 
 ##### CONDITION
@@ -218,6 +243,117 @@ There are 14 condition codes that decide whether the branch to occur:
 0x6204    BNE 0x04  ; Branch forward 4 bytes if previous operation clear Z flag
 ```
 
-### Control
 
-### System
+### CMP
+Compare instruction does the same job as subtraction arithmetic operation, by
+subtracting *SRC* from *DST* but does not store the result into *DST*. It just
+sets the condition flags. This instruction usually goes in pair with Bcc.
+
+#### Instruction Format
+```
+------+------+------+------+------------------------
+ 7  6 | 5  4 | 3  2 | 1  0 | F  E  D  C  B  A  9  8
+------+------+------+------+------------------------
+  SRC | DST  | FORM | 1  1 |    IMMEDIATE IF ANY
+------+------+------+------+------------------------
+```
+
+##### FORM
+ - __00__: RR - both *DST* and *SRC* are register, no extension byte
+ - __01__: AM - enables extension byte, *DST* is still a register, *SRC*
+   specifies meaning of the extension byte:
+   - __00__: __UNDEFINED__
+   - __01__: __UNDEFINED__
+   - __10__: __UNDEFINED__
+   - __11__: Extension byte defines immediate value.
+
+#### Examples
+```assembly
+0xD700    CMP  0x00 X  ; Subtract 0x00 from X and set the condition flags
+0x13      CMP  W X     ; Subtract W from X and set the condition flags
+```
+
+
+### JMP
+Unconditional jump to an absolute address.
+
+#### Instruction Format
+```
+------------------------+------------------------
+ 7  6  5  4  3  2  1  0 | F  E  D  C  B  A  9  8
+------------------------+------------------------
+ 0  0  0  0  1  0  1  0 |        ADDRESS
+------------------------+------------------------
+```
+
+#### Examples
+```assembly
+0x0A10    JMP 0x10  ; Jump to address 0x10
+```
+
+
+### JSR
+Jump to subroutine pushes address of the next instruction to stack and jumps to
+provided absolute address. This instruction assumes the PC defined as register Z.
+
+#### Instruction Format
+```
+------------------------+------------------------
+ 7  6  5  4  3  2  1  0 | F  E  D  C  B  A  9  8
+------------------------+------------------------
+ 0  0  0  0  1  1  1  0 |        ADDRESS
+------------------------+------------------------
+```
+
+#### Examples
+```assembly
+0x0E10    JSR 0x10  ; Push next address and jump to 0x10.
+```
+
+
+### RSR
+Return from subroutine pops a return address from the stack and jumps there.
+
+#### Instruction Format
+```
+------------------------
+ 7  6  5  4  3  2  1  0 
+------------------------
+ 0  0  0  1  1  1  1  0 
+------------------------
+```
+
+#### Examples
+```assembly
+0x1E    RSR   ; Return from subroutine
+```
+
+### HCF
+Halt instruction, halts the machine
+
+#### Instruction Format
+```
+------------------------
+ 7  6  5  4  3  2  1  0 
+------------------------
+ 1  1  0  0  1  1  1  1 
+------------------------
+```
+
+#### Examples
+```assembly
+0xCF    HCF   ; Halt and Catch Fire
+```
+
+### ABF
+Address bus failure, envoked by the "memory controller" whenever system tries
+to access non-existing address.
+
+#### Instruction Format
+```
+------------------------
+ 7  6  5  4  3  2  1  0 
+------------------------
+ 1  0  1  0  1  1  1  1 
+------------------------
+```
