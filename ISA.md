@@ -25,7 +25,7 @@ There are 4 basic status flags:
 CPU8 instruction  is 8 bit long plus, if required by instruction optional
 immediate or address extension byte.
 
-### Format
+### Assembly Language
 CPU8 assembly language uses 2-operand format, *SRC* defined first, *DST* second:
 ```
 INSTRUCTION SRC DST
@@ -33,7 +33,7 @@ INSTRUCTION SRC DST
 
 ### ARITH
 
-#### Encoding
+#### Instruction Format
 ```
 ----------------------------------------------------
  7  6 | 5 | 4  3  2 | 1  0 | F  E  D  C  B  A  9  8
@@ -42,14 +42,14 @@ INSTRUCTION SRC DST
 ----------------------------------------------------
 ```
 - OPC defines ALU operation, possible values are:
-  - 000: INC
-  - 001: ADD
-  - 010: SUB
-  - 011: NOT
-  - 100: OR
-  - 101: AND
-  - 110: LSR
-  - 111: LSL
+  - __000__: INC
+  - __001__: ADD
+  - __010__: SUB
+  - __011__: NOT
+  - __100__: OR
+  - __101__: AND
+  - __110__: LSR
+  - __111__: LSL
 
 - I defines SRC operand:
   - 0: SRC is register W
@@ -81,7 +81,7 @@ INSTRUCTION SRC DST
 ```
 
 ### MOV
-#### Encoding
+#### Instruction Format
 ```
 ----------------------------------------------------
  7  6 | 5  4 | 3  2 | 1  0 | F  E  D  C  B  A  9  8
@@ -116,7 +116,7 @@ There are 4 address modes:
 ### PUSH
 Push instruction decrements SP and stores a value into an available slot.
 
-#### Encoding
+#### Instruction Format
 ```
 ----------------------------------------------------
  7  6 | 5  4 | 3  2 | 1  0 | F  E  D  C  B  A  9  8
@@ -125,7 +125,7 @@ Push instruction decrements SP and stores a value into an available slot.
 ----------------------------------------------------
 ```
 
-#### FORM
+##### FORM
  - 10: __R__ - Push register to stack, *SRC* encodes a register to store, *DST*
    is all ones.
  - 11: __I__ - Push immediate value to stack, *SRC* is __01__ and *DST* is all
@@ -140,7 +140,7 @@ Push instruction decrements SP and stores a value into an available slot.
 ### POP
 Pop reads a value from stack and increments SP.
 
-#### Encoding
+#### Instruction Format
 ```
 ----------------------------------------------------
  7  6 | 5  4 | 3  2 | 1  0 | F  E  D  C  B  A  9  8
@@ -149,7 +149,7 @@ Pop reads a value from stack and increments SP.
 ----------------------------------------------------
 ```
 
-#### FORM
+##### FORM
  - 01: __R__ - Pop value from stack and store it into a register, *SRC* is all
    ones, *DST* encodes a register to store the poped value.
  - 11: __X__ - Pop value from stack and store it nowhere, *SRC* is __10__, *DST*
@@ -159,6 +159,63 @@ Pop reads a value from stack and increments SP.
 ```assembly
 0xF5    POP Z  ; Pop value from stack and store it into register Z
 0xBD    POP    ; Pop value from stack and drop it.
+```
+
+### BRA
+Unconditional PC-relative branch, PC points to the second byte(extension).
+
+#### Instruction Format
+```
+-------------------------------------------------
+ 7  6  5  4  3  2  1  0 | F  E  D  C  B  A  9  8
+-------------------------------------------------
+ 0  0  0  0  0  0  1  0 |         OFFSET
+-------------------------------------------------
+```
+
+#### Examples
+```assembly
+0x0201    BRA 0x06  ; Branch to the next instruction
+0x02F6    BRA 0xF6  ; Branch back 10 bytes
+```
+
+### Bcc
+Conditional PC-relative branch, PC points to the second byte(extension). CC part
+of the instruction mnemonic is replaced with an appropriate condition code suffix.
+These instructions go in pair with CMP instruction.
+
+#### Instruction Format
+```
+--------------------------------------------------
+ 7  6  5  4 | 3  2  1  0 | F  E  D  C  B  A  9  8
+--------------------------------------------------
+  CONDITION | 0  0  1  0 |         OFFSET
+--------------------------------------------------
+```
+
+##### CONDITION
+There are 14 condition codes that decide whether the branch to occur:
+| Signed    |  CC      | Mnemonic | Condition            | Test                    
+|-----------|----------|----------|----------------------|------------------------- 
+| unsigned  | __0010__ | HI       |  High                | !C and !Z
+| unsigned  | __0011__ | LS       |  Low or Same         |  C or Z
+| unsigned  | __0100__ | CC(HI)   |  Carry Clear         | !C
+| unsigned  | __0101__ | CS(LO)   |  Carry Set           |  C
+|           | __0110__ | NE       |  Not Equal           | !Z
+|           | __0111__ | EQ       |  Equal               |  Z
+|           | __1000__ | VC       |  Overflow Clear      | !V
+|           | __1001__ | VS       |  Overflow Set        |  V
+|           | __1010__ | PL       |  Plus                | !N
+|           | __1011__ | MI       |  Minus               |  N
+| signed    | __1100__ | GE       |  Greater or Equal    | (N and V) or (!N and !V)
+| signed    | __1101__ | LT       |  Less Than           | (N and !V) or (!N and V)
+| signed    | __1110__ | GT       |  Greater Than        | (N and V and !Z) or (!N and !V and !Z)
+| signed    | __1111__ | LE       |  Less or Equal       | (N and !V) or (!N and V) or Z
+
+#### Examples
+```assembly
+0x3210    BLS 0x10  ; Branch back 16 bytes if C or Z flags is set
+0x6204    BNE 0x04  ; Branch forward 4 bytes if previous operation clear Z flag
 ```
 
 ### Control
