@@ -195,22 +195,22 @@ These instructions go in pair with CMP instruction.
 
 ##### CONDITION
 There are 14 condition codes that decide whether the branch to occur:
-| Signed    |  CC      | Mnemonic | Condition            | Test                    
-|-----------|----------|----------|----------------------|------------------------- 
-| unsigned  | __0010__ | HI       |  High                | !C and !Z
-| unsigned  | __0011__ | LS       |  Low or Same         |  C or Z
-| unsigned  | __0100__ | CC(HI)   |  Carry Clear         | !C
-| unsigned  | __0101__ | CS(LO)   |  Carry Set           |  C
-|           | __0110__ | NE       |  Not Equal           | !Z
-|           | __0111__ | EQ       |  Equal               |  Z
-|           | __1000__ | VC       |  Overflow Clear      | !V
-|           | __1001__ | VS       |  Overflow Set        |  V
-|           | __1010__ | PL       |  Plus                | !N
-|           | __1011__ | MI       |  Minus               |  N
-| signed    | __1100__ | GE       |  Greater or Equal    | (N and V) or (!N and !V)
-| signed    | __1101__ | LT       |  Less Than           | (N and !V) or (!N and V)
-| signed    | __1110__ | GT       |  Greater Than        | (N and V and !Z) or (!N and !V and !Z)
-| signed    | __1111__ | LE       |  Less or Equal       | (N and !V) or (!N and V) or Z
+| Signed    |  CC      | Mnemonic | Condition            | Test                                   |
+|-----------|----------|----------|----------------------|----------------------------------------|
+| unsigned  | __0010__ | HI       |  High                | !C and !Z                              |
+| unsigned  | __0011__ | LS       |  Low or Same         |  C or Z                                |
+| unsigned  | __0100__ | CC(HI)   |  Carry Clear         | !C                                     |
+| unsigned  | __0101__ | CS(LO)   |  Carry Set           |  C                                     |
+|           | __0110__ | NE       |  Not Equal           | !Z                                     |
+|           | __0111__ | EQ       |  Equal               |  Z                                     |
+|           | __1000__ | VC       |  Overflow Clear      | !V                                     |
+|           | __1001__ | VS       |  Overflow Set        |  V                                     |
+|           | __1010__ | PL       |  Plus                | !N                                     |
+|           | __1011__ | MI       |  Minus               |  N                                     |
+| signed    | __1100__ | GE       |  Greater or Equal    | (N and V) or (!N and !V)               |
+| signed    | __1101__ | LT       |  Less Than           | (N and !V) or (!N and V)               |
+| signed    | __1110__ | GT       |  Greater Than        | (N and V and !Z) or (!N and !V and !Z) |
+| signed    | __1111__ | LE       |  Less or Equal       | (N and !V) or (!N and V) or Z          |
 
 #### Examples
 ```assembly
