@@ -195,6 +195,7 @@ These instructions go in pair with CMP instruction.
 
 ##### CONDITION
 There are 14 condition codes that decide whether the branch to occur:
+
 | Signed    |  CC  | Mnemonic | Condition            | Test                                   |
 |-----------|------|----------|----------------------|----------------------------------------|
 | unsigned  | 0010 | HI       |  High                | !C and !Z                              |
