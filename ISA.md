@@ -240,7 +240,7 @@ There are 14 condition codes that decide whether the branch to occur:
 
 #### Examples
 ```assembly
-0x3210    BLS 0x10  ; Branch back 16 bytes if C or Z flags is set
+0x32F0    BLS 0xF0  ; Branch back 16 bytes if C or Z flags is set
 0x6204    BNE 0x04  ; Branch forward 4 bytes if previous operation clear Z flag
 ```
 
